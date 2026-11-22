@@ -1,5 +1,14 @@
 # Shared readers for current Dewey monthly deliveries. These originate in the
 # matched-POI builder and are also used to rebuild the main county totals.
+daily_array_chunk_rows <- function() {
+  value <- suppressWarnings(as.numeric(Sys.getenv('SMOKE_ARRAY_CHUNK_ROWS', '500000')))
+  if (length(value) != 1L || !is.finite(value) || value < 1 ||
+      value > .Machine$integer.max || value != floor(value)) {
+    stop('SMOKE_ARRAY_CHUNK_ROWS must be a positive integer.')
+  }
+  as.integer(value)
+}
+
 open_lowercase <- function(path) {
   ds <- arrow::open_dataset(path)
   dplyr::select(ds, dplyr::all_of(setNames(names(ds), tolower(names(ds)))))

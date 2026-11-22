@@ -45,6 +45,19 @@ visits <- data.frame(placekey = c('a','b','excluded'), raw_visit_counts = c(3,4,
 write_parquet(visits, file.path(Sys.getenv('DEWEY_MONTHLY_PATTERNS_FILES_DIR'), '2019-02--data_0.parquet'))
 
 source('1_build/daily_consumer_data/add_daily_total_spend_and_visits_by_county.R')
+old_chunk_env <- Sys.getenv('SMOKE_ARRAY_CHUNK_ROWS', unset = NA_character_)
+Sys.setenv(SMOKE_ARRAY_CHUNK_ROWS = '25000')
+stopifnot(daily_array_chunk_rows() == 25000L)
+Sys.setenv(SMOKE_ARRAY_CHUNK_ROWS = '1.5')
+stopifnot(inherits(try(daily_array_chunk_rows(), silent = TRUE), 'try-error'))
+if (is.na(old_chunk_env)) Sys.unsetenv('SMOKE_ARRAY_CHUNK_ROWS') else Sys.setenv(SMOKE_ARRAY_CHUNK_ROWS = old_chunk_env)
+chunk_fixture <- data.table(county_geoid = c('08001','08001','06001'), half = 1L,
+  is_matched = TRUE, start_date = as.Date(c('2019-01-31','2019-02-01','2019-01-31')),
+  visits_by_day = c('[1,2]', '[3,null]', '[4,5]'))
+small <- sum_daily_arrays(chunk_fixture, 'visits_by_day', 'visits', chunk_rows = 1L)
+large <- sum_daily_arrays(chunk_fixture, 'visits_by_day', 'visits', chunk_rows = 500000L)
+setorderv(small, c('county_geoid','date')); setorderv(large, c('county_geoid','date'))
+stopifnot(isTRUE(all.equal(as.data.frame(small), as.data.frame(large))))
 CHUNK_ROWS <- 1L  # also exercise aggregation across small chunks
 inputs <- list.files(fixture, recursive = TRUE, full.names = TRUE)
 input_hashes <- tools::md5sum(inputs)

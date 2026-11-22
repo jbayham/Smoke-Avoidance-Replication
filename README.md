@@ -67,6 +67,8 @@ One writer is permitted per output directory. If the process is forcibly termina
 
 The full pipeline is compute- and storage-intensive: the commercial source delivery and gridded inputs are large, and several models use millions of county-days. Use a machine with substantial RAM and scratch storage; the final measured runtime and resource evidence are recorded in [validation status](docs/validation.md). A small laptop may need to run from previously generated **private** intermediate data, or use a compute server. The package does not ship those datasets.
 
+To reduce temporary memory during commercial daily-array expansion, set the environment variable `SMOKE_ARRAY_CHUNK_ROWS=25000` before running the pipeline (default: 500000). This controls computation batch size, not the sample or model. Stages run sequentially; the configured thread count defaults to four. OS CPU affinity and memory limits can additionally constrain the complete process tree on a shared server.
+
 ## Files and directories
 
 | Path | Contents |

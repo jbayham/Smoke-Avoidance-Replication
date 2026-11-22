@@ -2,6 +2,8 @@
 
 **Implementation is prepared, but the clean full-data reproduction is incomplete. A November 22 process and output check found no active rebuild process and no completed stages in the full-run record. Its saved `running` status is stale. This is not a claim that all 50 stages have completed from raw inputs.**
 
+A supervised restart was launched November 22. All ten Python tests and eight R synthetic suites passed again, including a check that smaller daily-array batches preserve the aggregation. The restart is waiting for the institution's vendor-data storage to become readable: the mount reports a host outage. All 132 non-vendor inputs are readable and match their inventory sizes. The service checks input availability every five minutes and will then run all stages. It uses four-CPU affinity, `nice +10`, sequential stages, a 16 GiB memory-pressure threshold, a 64 GiB memory ceiling, and 25,000-row daily-array batches. This is a resource budget, not a demonstrated minimum memory requirement.
+
 | Check | Evidence/status |
 |---|---|
 | Python runner | Ten tests pass, including dependency order, missing-input reporting, path handling, exclusive execution, failure status, resume and downstream invalidation |

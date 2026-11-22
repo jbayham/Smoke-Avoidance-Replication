@@ -56,7 +56,7 @@ LAST_MONTH  <- as.Date(Sys.getenv('DEWEY_LAST_MONTH', unset = '2023-12-01'))
 DEFERRABLE_NAICS2 <- c('71', '72')
 
 # rows of place-months exploded to place-days at a time; bounds peak memory
-CHUNK_ROWS <- 500000L
+CHUNK_ROWS <- daily_array_chunk_rows()
 
 # digest2int is a deterministic string hash, so the split does not depend on
 # which places are in a given file or on the order they are read

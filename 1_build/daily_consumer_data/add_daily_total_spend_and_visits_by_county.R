@@ -16,7 +16,7 @@ source(file.path(CODE_DIR, '1_build/daily_consumer_data/dewey_monthly_helpers.R'
 
 FIRST_MONTH <- as.Date(Sys.getenv('DEWEY_FIRST_MONTH', unset = '2019-01-01'))
 LAST_MONTH <- as.Date(Sys.getenv('DEWEY_LAST_MONTH', unset = '2023-12-01'))
-CHUNK_ROWS <- 500000L
+CHUNK_ROWS <- daily_array_chunk_rows()
 
 read_total_places <- function() {
   places <- open_lowercase(PLACE_DIR) %>%
@@ -138,6 +138,8 @@ build_county_daily_totals <- function() {
       totals[, delivery_month := month]
       setindex(totals, NULL)
       write_parquet(totals, file.path(stage, paste0(value_name, '_parts'), paste0(format(month, '%Y-%m'), '.parquet')))
+      rm(sums, totals)
+      gc(verbose = FALSE)
     }
   }
   write_county_months(file.path(stage, 'spend_parts'), file.path(stage, 'daily_spend'), 'spend', months)
