@@ -1,0 +1,7 @@
+fixed_effects,sample,estimator,estimate,se,n_obs
+table 2 FEs,all places,"OLS, county total",0.16714680342215543,0.01988109771952288,810343
+table 2 FEs,all places,"OLS, same half (stacked)",0.15277439881778526,0.016180605707299844,1620686
+table 2 FEs,all places,Split-sample IV (ORIV),0.2803934745938154,0.03601194208537511,1620686
+table 2 FEs,matched places,"OLS, county total",0.43764119464467505,0.015139422114795294,771389
+table 2 FEs,matched places,"OLS, same half (stacked)",0.6088814086402254,0.010548568740236611,1542778
+table 2 FEs,matched places,Split-sample IV (ORIV),0.9044896029982231,0.16612725549471655,1542778

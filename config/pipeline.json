@@ -1,0 +1,973 @@
+[
+  {
+    "name": "consumer_totals",
+    "script": "1_build/daily_consumer_data/add_daily_total_spend_and_visits_by_county.R",
+    "deps": [],
+    "outputs": [
+      "data/intermediate/consumer/daily_spend",
+      "data/intermediate/consumer/daily_visits"
+    ],
+    "inputs": [
+      "data/raw/vendor/places",
+      "data/raw/vendor/spend",
+      "data/raw/vendor/monthly_patterns"
+    ],
+    "group": "build"
+  },
+  {
+    "name": "consumer_matched",
+    "script": "1_build/daily_consumer_data/add_daily_matched_poi_spend_and_visits_by_county.R",
+    "deps": [],
+    "outputs": [
+      "data/intermediate/consumer/county_daily_matched_poi_spend_and_visits.parquet"
+    ],
+    "inputs": [
+      "data/raw/vendor/places",
+      "data/raw/vendor/spend",
+      "data/raw/vendor/monthly_patterns"
+    ],
+    "group": "build"
+  },
+  {
+    "name": "smoke_aggregation",
+    "script": "1_build/smoke_pm/aggregate_surface_level_smoke_pm_daily.R",
+    "deps": [],
+    "outputs": [
+      "data/intermediate/smoke/mean/county_smoke_pm_all_time_mean.csv",
+      "data/intermediate/smoke/median/county_smoke_pm_all_time_median.csv"
+    ],
+    "inputs": [
+      "data/raw/smoke/grid/grid-fullUS.shp",
+      "data/raw/smoke/grids",
+      "data/raw/geography/tl_2020_us_county.shp",
+      "data/raw/geography/tl_2020_us_state.shp",
+      "data/raw/smoke/grid/grid-fullUS.shx",
+      "data/raw/smoke/grid/grid-fullUS.dbf",
+      "data/raw/geography/tl_2020_us_county.shx",
+      "data/raw/geography/tl_2020_us_county.dbf",
+      "data/raw/geography/tl_2020_us_county.prj",
+      "data/raw/geography/tl_2020_us_state.shx",
+      "data/raw/geography/tl_2020_us_state.dbf",
+      "data/raw/geography/tl_2020_us_state.prj"
+    ],
+    "group": "build"
+  },
+  {
+    "name": "aqi",
+    "script": "1_build/smoke_pm/aqi_download_and_process.R",
+    "deps": [],
+    "outputs": [
+      "data/intermediate/aqi/all_years_aqi_by_county_w__boundary_flags.csv"
+    ],
+    "inputs": [
+      "data/raw/aqi"
+    ],
+    "group": "build"
+  },
+  {
+    "name": "smoke_filter",
+    "script": "1_build/smoke_pm/combine_and_process_smoke_with_aqi_filtering.R",
+    "deps": [
+      "smoke_aggregation",
+      "aqi"
+    ],
+    "outputs": [
+      "data/intermediate/smoke/smoke_pm_with_aqi_filters.csv"
+    ],
+    "inputs": [
+      "data/intermediate/smoke/mean/county_smoke_pm_all_time_mean.csv",
+      "data/intermediate/smoke/median/county_smoke_pm_all_time_median.csv",
+      "data/intermediate/aqi/all_years_aqi_by_county_w__boundary_flags.csv"
+    ],
+    "group": "build"
+  },
+  {
+    "name": "weather",
+    "script": "1_build/weather/pull_weather_data.R",
+    "deps": [],
+    "outputs": [
+      "data/intermediate/weather/final/county_weather_2019.csv.gz",
+      "data/intermediate/weather/final/county_weather_2020.csv.gz",
+      "data/intermediate/weather/final/county_weather_2021.csv.gz",
+      "data/intermediate/weather/final/county_weather_2022.csv.gz",
+      "data/intermediate/weather/final/county_weather_2023.csv.gz"
+    ],
+    "inputs": [
+      "data/raw/weather",
+      "data/raw/geography/tl_2020_us_county.shp",
+      "data/raw/geography/tl_2020_us_county.shx",
+      "data/raw/geography/tl_2020_us_county.dbf",
+      "data/raw/geography/tl_2020_us_county.prj"
+    ],
+    "group": "build"
+  },
+  {
+    "name": "parks",
+    "script": "1_build/county_characteristics/add_park_area_per_county.R",
+    "deps": [],
+    "outputs": [
+      "data/intermediate/county/county_fraction_park.csv"
+    ],
+    "inputs": [
+      "data/raw/parks/USA_Parks.shp",
+      "data/raw/geography/tl_2019_us_county.shp",
+      "data/raw/parks/USA_Parks.shx",
+      "data/raw/parks/USA_Parks.dbf",
+      "data/raw/parks/USA_Parks.prj",
+      "data/raw/geography/tl_2019_us_county.shx",
+      "data/raw/geography/tl_2019_us_county.dbf",
+      "data/raw/geography/tl_2019_us_county.prj"
+    ],
+    "group": "build"
+  },
+  {
+    "name": "amenity",
+    "script": "1_build/county_characteristics/combine_tourism_dependency_and_natural_resource_dep.R",
+    "deps": [
+      "parks"
+    ],
+    "outputs": [
+      "data/intermediate/county/natural_amenity_tourism_dependence.csv"
+    ],
+    "inputs": [
+      "data/raw/county/tourism_earnings_and_employment_proportions_by_county.csv",
+      "data/intermediate/county/county_fraction_park.csv"
+    ],
+    "group": "build"
+  },
+  {
+    "name": "background",
+    "script": "1_build/county_characteristics/add_baseline_background_pm_by_county.R",
+    "deps": [
+      "smoke_aggregation"
+    ],
+    "outputs": [
+      "data/intermediate/county/county_avg_background_smoke_dist_2018.csv"
+    ],
+    "inputs": [
+      "data/intermediate/smoke/mean/county_smoke_pm_all_time_mean.csv",
+      "data/intermediate/smoke/median/county_smoke_pm_all_time_median.csv"
+    ],
+    "group": "build"
+  },
+  {
+    "name": "cbp",
+    "script": "1_build/county_characteristics/add_cbp_county_composition.R",
+    "deps": [
+      "classification"
+    ],
+    "outputs": [
+      "data/intermediate/county/cbp_county_composition_2018.csv"
+    ],
+    "inputs": [
+      "data/raw/county/CBP2018.CB1800CBP-Data.csv",
+      "data/raw/county/geocorr2022_CT_counties_to_county_equivalents.csv",
+      "data/intermediate/county/deferrable_naics_code_classified_indoor_outdoor.csv"
+    ],
+    "group": "build"
+  },
+  {
+    "name": "rurality",
+    "script": "1_build/county_characteristics/add_carr_county_rurality_index.R",
+    "deps": [],
+    "outputs": [
+      "data/intermediate/county/county_rurality_index.csv"
+    ],
+    "inputs": [
+      "data/raw/county/county_carr_public_rescale_091324.csv"
+    ],
+    "group": "build"
+  },
+  {
+    "name": "bea_county",
+    "script": "1_build/county_characteristics/add_bea_outdoor_rec_state_shares.R",
+    "deps": [],
+    "outputs": [
+      "data/intermediate/county/bea_percent_state_comp_gdp_from_rec_2018.csv",
+      "data/intermediate/county/bea_percent_state_gdp_from_rec_by_activity_2018.csv"
+    ],
+    "inputs": [
+      "data/raw/bea/bea_overall_gdp_and_compensation_table_2018.csv",
+      "data/raw/bea/bea_outdoor_rec_value_added_by_activity_2018.csv",
+      "data/raw/bea/bea_outdoor_rec_value_added_by_naics_2018.csv",
+      "data/raw/bea/bea_outdoor_rec_compensation_by_naics_2018.csv"
+    ],
+    "group": "build"
+  },
+  {
+    "name": "county_merge",
+    "script": "1_build/county_characteristics/merge_county_information.R",
+    "deps": [
+      "amenity",
+      "background",
+      "cbp",
+      "rurality",
+      "bea_county"
+    ],
+    "outputs": [
+      "data/intermediate/county/county_info_all.csv"
+    ],
+    "inputs": [
+      "data/raw/county/county_census_population_and_income.csv",
+      "data/intermediate/county/natural_amenity_tourism_dependence.csv",
+      "data/intermediate/county/county_avg_background_smoke_dist_2018.csv",
+      "data/intermediate/county/cbp_county_composition_2018.csv",
+      "data/intermediate/county/county_rurality_index.csv",
+      "data/intermediate/county/bea_percent_state_comp_gdp_from_rec_2018.csv",
+      "data/intermediate/county/bea_percent_state_gdp_from_rec_by_activity_2018.csv"
+    ],
+    "group": "build"
+  },
+  {
+    "name": "classification",
+    "script": "1_build/classify_naics_codes_outdoor_activities.R",
+    "deps": [],
+    "outputs": [
+      "data/intermediate/county/deferrable_naics_code_classified_indoor_outdoor.csv",
+      "output/tables/appendix/appendix_table_indoor_outdoor_classifications.tex"
+    ],
+    "inputs": [
+      "data/raw/naics/6-digit_2017_Codes.xlsx"
+    ],
+    "group": "build"
+  },
+  {
+    "name": "daily",
+    "script": "1_build/reg_data/build_reg_data_daily.R",
+    "deps": [
+      "consumer_totals",
+      "consumer_matched",
+      "smoke_filter",
+      "weather",
+      "county_merge"
+    ],
+    "outputs": [
+      "data/processed/daily.csv",
+      "data/processed/avg_pm_per_smoke_bin.csv"
+    ],
+    "inputs": [
+      "data/raw/fire/fire_panel_us_2019_2026.csv",
+      "data/intermediate/consumer/daily_spend",
+      "data/intermediate/consumer/daily_visits",
+      "data/intermediate/consumer/county_daily_matched_poi_spend_and_visits.parquet",
+      "data/intermediate/smoke/smoke_pm_with_aqi_filters.csv",
+      "data/intermediate/weather/final/county_weather_2019.csv.gz",
+      "data/intermediate/weather/final/county_weather_2020.csv.gz",
+      "data/intermediate/weather/final/county_weather_2021.csv.gz",
+      "data/intermediate/weather/final/county_weather_2022.csv.gz",
+      "data/intermediate/weather/final/county_weather_2023.csv.gz",
+      "data/intermediate/county/county_info_all.csv"
+    ],
+    "group": "build"
+  },
+  {
+    "name": "weekly",
+    "script": "1_build/reg_data/build_reg_data_weekly.R",
+    "deps": [
+      "daily",
+      "consumer_matched"
+    ],
+    "outputs": [
+      "data/processed/weekly.csv"
+    ],
+    "inputs": [
+      "data/raw/cpi/annual_avg_cpi_deflation_relative_to_2017.csv",
+      "data/processed/daily.csv",
+      "data/processed/avg_pm_per_smoke_bin.csv",
+      "data/intermediate/consumer/county_daily_matched_poi_spend_and_visits.parquet"
+    ],
+    "group": "build"
+  },
+  {
+    "name": "baseline",
+    "script": "2_analysis/figure_1_2_day_of_analysis_run.R",
+    "deps": [
+      "daily"
+    ],
+    "outputs": [
+      "output/models/binary_base_day_of_dose_response.rds",
+      "output/models/binary_quartile_rurality_interaction.rds",
+      "output/models/binary_quartile_rurality_interaction_quantile_day_interaction_FE.rds",
+      "output/models/binary_weekend_interaction.rds",
+      "output/models/binary_quartile_background_pm_interaction.rds",
+      "output/models/binary_quartile_background_pm_interaction_quantile_day_interaction_FE.rds",
+      "output/models/binary_quartile_income_interaction.rds",
+      "output/models/binary_quartile_income_interaction_quantile_day_interaction_FE.rds",
+      "output/models/binary_quartile_nat_amenity_interaction.rds",
+      "output/models/binary_quartile_nat_amenity_interaction_quantile_day_interaction_FE.rds",
+      "output/models/binary_quartile_gdp_rec_interaction.rds",
+      "output/models/binary_quartile_gdp_rec_interaction_quantile_day_interaction_FE.rds",
+      "output/models/binary_quartile_comp_rec_interaction.rds",
+      "output/models/binary_quartile_comp_rec_interaction_quantile_day_interaction_FE.rds",
+      "output/models/binary_quartile_cbp_outdoor_estab_interaction.rds",
+      "output/models/binary_quartile_cbp_outdoor_estab_interaction_quantile_day_interaction_FE.rds",
+      "output/models/binary_quartile_cbp_outdoor_payroll_interaction.rds",
+      "output/models/binary_quartile_cbp_outdoor_payroll_interaction_quantile_day_interaction_FE.rds",
+      "output/models/binary_quartile_cbp_hhi_estab_interaction.rds",
+      "output/models/binary_quartile_cbp_hhi_estab_interaction_quantile_day_interaction_FE.rds",
+      "output/models/binary_quartile_cbp_hhi_payroll_interaction.rds",
+      "output/models/binary_quartile_cbp_hhi_payroll_interaction_quantile_day_interaction_FE.rds"
+    ],
+    "inputs": [
+      "data/processed/daily.csv",
+      "data/processed/avg_pm_per_smoke_bin.csv"
+    ],
+    "group": "analysis"
+  },
+  {
+    "name": "baseline_figure",
+    "script": "2_analysis/figure_1_day_of_analysis_plot.R",
+    "deps": [
+      "daily",
+      "baseline"
+    ],
+    "outputs": [
+      "output/figures/figure_1a_dose_response_daily_effect.pdf"
+    ],
+    "inputs": [
+      "data/processed/daily.csv",
+      "data/processed/avg_pm_per_smoke_bin.csv",
+      "output/models/binary_base_day_of_dose_response.rds",
+      "output/models/binary_quartile_rurality_interaction.rds",
+      "output/models/binary_quartile_rurality_interaction_quantile_day_interaction_FE.rds",
+      "output/models/binary_weekend_interaction.rds",
+      "output/models/binary_quartile_background_pm_interaction.rds",
+      "output/models/binary_quartile_background_pm_interaction_quantile_day_interaction_FE.rds",
+      "output/models/binary_quartile_income_interaction.rds",
+      "output/models/binary_quartile_income_interaction_quantile_day_interaction_FE.rds",
+      "output/models/binary_quartile_nat_amenity_interaction.rds",
+      "output/models/binary_quartile_nat_amenity_interaction_quantile_day_interaction_FE.rds",
+      "output/models/binary_quartile_gdp_rec_interaction.rds",
+      "output/models/binary_quartile_gdp_rec_interaction_quantile_day_interaction_FE.rds",
+      "output/models/binary_quartile_comp_rec_interaction.rds",
+      "output/models/binary_quartile_comp_rec_interaction_quantile_day_interaction_FE.rds",
+      "output/models/binary_quartile_cbp_outdoor_estab_interaction.rds",
+      "output/models/binary_quartile_cbp_outdoor_estab_interaction_quantile_day_interaction_FE.rds",
+      "output/models/binary_quartile_cbp_outdoor_payroll_interaction.rds",
+      "output/models/binary_quartile_cbp_outdoor_payroll_interaction_quantile_day_interaction_FE.rds",
+      "output/models/binary_quartile_cbp_hhi_estab_interaction.rds",
+      "output/models/binary_quartile_cbp_hhi_estab_interaction_quantile_day_interaction_FE.rds",
+      "output/models/binary_quartile_cbp_hhi_payroll_interaction.rds",
+      "output/models/binary_quartile_cbp_hhi_payroll_interaction_quantile_day_interaction_FE.rds"
+    ],
+    "group": "analysis"
+  },
+  {
+    "name": "spending_models",
+    "script": "2_analysis/matched_poi_and_split_sample_spend_on_visits.R",
+    "deps": [
+      "weekly"
+    ],
+    "outputs": [
+      "output/models/spend_on_visits_matched_poi_split_sample_monthly_matched_asinh.csv",
+      "output/tables/appendix/appendix_table_spend_on_visits_ols_and_split_sample_iv_asinh.tex"
+    ],
+    "inputs": [
+      "data/processed/weekly.csv"
+    ],
+    "group": "analysis"
+  },
+  {
+    "name": "weighted_spending",
+    "script": "1_build/daily_consumer_data/avg_daily_county_spend_weighted_by_poi_match_rate.R",
+    "deps": [
+      "weekly",
+      "consumer_matched"
+    ],
+    "outputs": [
+      "data/intermediate/spending/county_avg_daily_spend_poi_match_weighted.csv"
+    ],
+    "inputs": [
+      "data/raw/cpi/annual_avg_cpi_deflation_relative_to_2017.csv",
+      "data/processed/weekly.csv",
+      "data/intermediate/consumer/county_daily_matched_poi_spend_and_visits.parquet"
+    ],
+    "group": "analysis"
+  },
+  {
+    "name": "spending_summary",
+    "script": "2_analysis/compile_spending_visits_relationship_summary.R",
+    "deps": [
+      "spending_models",
+      "weighted_spending",
+      "weekly"
+    ],
+    "outputs": [
+      "data/intermediate/spending/annual_spending_visits_and_relationship_data.csv"
+    ],
+    "inputs": [
+      "data/raw/cpi/annual_avg_cpi_deflation_relative_to_2017.csv",
+      "data/raw/bea/annual_personal_expenditures_chained_dollars_2018_2024.csv",
+      "output/models/spend_on_visits_matched_poi_split_sample_monthly_matched_asinh.csv",
+      "data/intermediate/spending/county_avg_daily_spend_poi_match_weighted.csv",
+      "data/processed/weekly.csv"
+    ],
+    "group": "analysis"
+  },
+  {
+    "name": "welfare_spending",
+    "script": "2_analysis/estimate_welfare_losses_from_spending.R",
+    "deps": [
+      "spending_summary",
+      "baseline"
+    ],
+    "outputs": [
+      "output/models/welfare_per_bin_by_spend_on_visits_slope.rds"
+    ],
+    "inputs": [
+      "data/intermediate/spending/annual_spending_visits_and_relationship_data.csv",
+      "output/models/binary_base_day_of_dose_response.rds",
+      "output/models/binary_quartile_rurality_interaction.rds",
+      "output/models/binary_quartile_rurality_interaction_quantile_day_interaction_FE.rds",
+      "output/models/binary_weekend_interaction.rds",
+      "output/models/binary_quartile_background_pm_interaction.rds",
+      "output/models/binary_quartile_background_pm_interaction_quantile_day_interaction_FE.rds",
+      "output/models/binary_quartile_income_interaction.rds",
+      "output/models/binary_quartile_income_interaction_quantile_day_interaction_FE.rds",
+      "output/models/binary_quartile_nat_amenity_interaction.rds",
+      "output/models/binary_quartile_nat_amenity_interaction_quantile_day_interaction_FE.rds",
+      "output/models/binary_quartile_gdp_rec_interaction.rds",
+      "output/models/binary_quartile_gdp_rec_interaction_quantile_day_interaction_FE.rds",
+      "output/models/binary_quartile_comp_rec_interaction.rds",
+      "output/models/binary_quartile_comp_rec_interaction_quantile_day_interaction_FE.rds",
+      "output/models/binary_quartile_cbp_outdoor_estab_interaction.rds",
+      "output/models/binary_quartile_cbp_outdoor_estab_interaction_quantile_day_interaction_FE.rds",
+      "output/models/binary_quartile_cbp_outdoor_payroll_interaction.rds",
+      "output/models/binary_quartile_cbp_outdoor_payroll_interaction_quantile_day_interaction_FE.rds",
+      "output/models/binary_quartile_cbp_hhi_estab_interaction.rds",
+      "output/models/binary_quartile_cbp_hhi_estab_interaction_quantile_day_interaction_FE.rds",
+      "output/models/binary_quartile_cbp_hhi_payroll_interaction.rds",
+      "output/models/binary_quartile_cbp_hhi_payroll_interaction_quantile_day_interaction_FE.rds"
+    ],
+    "group": "analysis"
+  },
+  {
+    "name": "welfare_health",
+    "script": "2_analysis/estimate_welfare_losses_from_health_effects.R",
+    "deps": [
+      "spending_summary",
+      "daily"
+    ],
+    "outputs": [
+      "output/models/estimated_mortality_cost_by_smoke_bin.rds"
+    ],
+    "inputs": [
+      "data/raw/mortality",
+      "data/intermediate/spending/annual_spending_visits_and_relationship_data.csv",
+      "data/processed/avg_pm_per_smoke_bin.csv"
+    ],
+    "group": "analysis"
+  },
+  {
+    "name": "welfare_figures",
+    "script": "2_analysis/plot_welfare_effect_plots.R",
+    "deps": [
+      "welfare_spending",
+      "welfare_health"
+    ],
+    "outputs": [
+      "output/figures/figure_10b_welfare_comparison_ma_2024_per_day_three_panel_updated.pdf",
+      "output/figures/appendix/figure_10a_welfare_comparison_gould_2024.pdf",
+      "output/figures/appendix/figure_10c_welfare_comparison_qiu_2025.pdf"
+    ],
+    "inputs": [
+      "output/models/welfare_per_bin_by_spend_on_visits_slope.rds",
+      "output/models/estimated_mortality_cost_by_smoke_bin.rds"
+    ],
+    "group": "analysis"
+  },
+  {
+    "name": "sectors",
+    "script": "2_analysis/figure_3_day_of_analysis_by_naics_code_run_and_plot.R",
+    "deps": [
+      "daily",
+      "classification"
+    ],
+    "outputs": [
+      "output/models/sector_specific_naics_results.csv",
+      "output/figures/figure_3a_day_of_analysis_naics_by_setting_60_100.pdf",
+      "output/figures/figure_3b_day_of_analysis_naics_by_setting_and_bin.pdf"
+    ],
+    "inputs": [
+      "data/processed/daily.csv",
+      "data/processed/avg_pm_per_smoke_bin.csv",
+      "data/intermediate/county/deferrable_naics_code_classified_indoor_outdoor.csv",
+      "output/tables/appendix/appendix_table_indoor_outdoor_classifications.tex"
+    ],
+    "group": "analysis"
+  },
+  {
+    "name": "fire_robustness",
+    "script": "2_analysis/appendix/fire_filter_day_of_regressions_run_and_gen_table.R",
+    "deps": [
+      "daily",
+      "baseline"
+    ],
+    "outputs": [
+      "output/tables/appendix/appendix_table_fire_robustness_log.tex"
+    ],
+    "inputs": [
+      "data/processed/daily.csv",
+      "data/processed/avg_pm_per_smoke_bin.csv",
+      "output/models/binary_base_day_of_dose_response.rds",
+      "output/models/binary_quartile_rurality_interaction.rds",
+      "output/models/binary_quartile_rurality_interaction_quantile_day_interaction_FE.rds",
+      "output/models/binary_weekend_interaction.rds",
+      "output/models/binary_quartile_background_pm_interaction.rds",
+      "output/models/binary_quartile_background_pm_interaction_quantile_day_interaction_FE.rds",
+      "output/models/binary_quartile_income_interaction.rds",
+      "output/models/binary_quartile_income_interaction_quantile_day_interaction_FE.rds",
+      "output/models/binary_quartile_nat_amenity_interaction.rds",
+      "output/models/binary_quartile_nat_amenity_interaction_quantile_day_interaction_FE.rds",
+      "output/models/binary_quartile_gdp_rec_interaction.rds",
+      "output/models/binary_quartile_gdp_rec_interaction_quantile_day_interaction_FE.rds",
+      "output/models/binary_quartile_comp_rec_interaction.rds",
+      "output/models/binary_quartile_comp_rec_interaction_quantile_day_interaction_FE.rds",
+      "output/models/binary_quartile_cbp_outdoor_estab_interaction.rds",
+      "output/models/binary_quartile_cbp_outdoor_estab_interaction_quantile_day_interaction_FE.rds",
+      "output/models/binary_quartile_cbp_outdoor_payroll_interaction.rds",
+      "output/models/binary_quartile_cbp_outdoor_payroll_interaction_quantile_day_interaction_FE.rds",
+      "output/models/binary_quartile_cbp_hhi_estab_interaction.rds",
+      "output/models/binary_quartile_cbp_hhi_estab_interaction_quantile_day_interaction_FE.rds",
+      "output/models/binary_quartile_cbp_hhi_payroll_interaction.rds",
+      "output/models/binary_quartile_cbp_hhi_payroll_interaction_quantile_day_interaction_FE.rds"
+    ],
+    "group": "analysis"
+  },
+  {
+    "name": "count_models",
+    "script": "2_analysis/appendix/robustness_count_models.R",
+    "deps": [
+      "daily",
+      "baseline"
+    ],
+    "outputs": [
+      "output/tables/appendix/appendix_table_count_models.tex"
+    ],
+    "inputs": [
+      "data/processed/daily.csv",
+      "data/processed/avg_pm_per_smoke_bin.csv",
+      "output/models/binary_base_day_of_dose_response.rds"
+    ],
+    "group": "analysis"
+  },
+  {
+    "name": "additional_fixed_effects",
+    "script": "2_analysis/appendix/robustness_additional_fixed_effects.R",
+    "deps": [
+      "daily"
+    ],
+    "outputs": [
+      "output/tables/appendix/appendix_table_additional_fixed_effects.tex"
+    ],
+    "inputs": [
+      "data/processed/daily.csv",
+      "data/processed/avg_pm_per_smoke_bin.csv"
+    ],
+    "group": "analysis"
+  },
+  {
+    "name": "within_county_variance",
+    "script": "2_analysis/appendix/test_heterogeneity_by_within_county_variance.R",
+    "deps": [
+      "daily",
+      "baseline"
+    ],
+    "outputs": [
+      "output/tables/appendix/appendix_table_within_county_smoke_variance.tex"
+    ],
+    "inputs": [
+      "data/processed/daily.csv",
+      "data/processed/avg_pm_per_smoke_bin.csv",
+      "output/models/binary_base_day_of_dose_response.rds"
+    ],
+    "group": "analysis"
+  },
+  {
+    "name": "aqi_filters",
+    "script": "2_analysis/appendix/test_different_aqi_filters.R",
+    "deps": [
+      "daily",
+      "baseline"
+    ],
+    "outputs": [
+      "output/figures/appendix/aqi_filter_grid_dose_response_median_only.pdf",
+      "output/models/aqi_filter_grid_dose_response_binary_coefs.rds"
+    ],
+    "inputs": [
+      "data/processed/daily.csv",
+      "data/processed/avg_pm_per_smoke_bin.csv",
+      "output/models/binary_base_day_of_dose_response.rds"
+    ],
+    "group": "analysis"
+  },
+  {
+    "name": "panel_composition",
+    "script": "2_analysis/appendix/check_panel_composition_not_associated_with_smoke.R",
+    "deps": [
+      "daily"
+    ],
+    "outputs": [
+      "output/tables/appendix/appendix_table_panel_composition_smoke.tex",
+      "output/figures/appendix/panel_scaling_multiple_distribution.pdf"
+    ],
+    "inputs": [
+      "data/processed/daily.csv",
+      "data/processed/avg_pm_per_smoke_bin.csv"
+    ],
+    "group": "analysis"
+  },
+  {
+    "name": "visit_distribution",
+    "script": "2_analysis/appendix/gen_visit_distribution_plot.R",
+    "deps": [
+      "daily"
+    ],
+    "outputs": [
+      "output/figures/appendix/daily_deferrable_visits_distribution.pdf",
+      "output/figures/appendix/daily_deferrable_visits_distribution_filter_out_zero_visit_counties.pdf"
+    ],
+    "inputs": [
+      "data/processed/daily.csv",
+      "data/processed/avg_pm_per_smoke_bin.csv"
+    ],
+    "group": "analysis"
+  },
+  {
+    "name": "smoke_by_year",
+    "script": "2_analysis/appendix/plot_smoke_days_by_year.R",
+    "deps": [
+      "daily"
+    ],
+    "outputs": [
+      "output/figures/appendix/smoke_days_by_bin_pct_change_from_2020.pdf",
+      "output/figures/appendix/smoke_days_by_bin_yearly_average.pdf"
+    ],
+    "inputs": [
+      "data/processed/daily.csv",
+      "data/processed/avg_pm_per_smoke_bin.csv"
+    ],
+    "group": "analysis"
+  },
+  {
+    "name": "smoke_by_weekday",
+    "script": "2_analysis/appendix/plot_smoke_days_by_weekend_weekday.R",
+    "deps": [
+      "daily"
+    ],
+    "outputs": [
+      "output/figures/appendix/smoke_days_by_weekend_weekday_counts.pdf"
+    ],
+    "inputs": [
+      "data/processed/daily.csv",
+      "data/processed/avg_pm_per_smoke_bin.csv"
+    ],
+    "group": "analysis"
+  },
+  {
+    "name": "smoke_variance_plot",
+    "script": "2_analysis/appendix/plot_within_and_between_county_variance.R",
+    "deps": [
+      "daily",
+      "smoke_aggregation"
+    ],
+    "outputs": [
+      "output/figures/appendix/figure_A3_within_and_between_variance.png"
+    ],
+    "inputs": [
+      "data/processed/daily.csv",
+      "data/processed/avg_pm_per_smoke_bin.csv",
+      "data/intermediate/smoke/mean/county_smoke_pm_all_time_mean.csv"
+    ],
+    "group": "analysis"
+  },
+  {
+    "name": "fire_distribution",
+    "script": "2_analysis/appendix/plot_viirs_fire_distribution.R",
+    "deps": [
+      "daily"
+    ],
+    "outputs": [
+      "output/figures/appendix/viirs_fire_point_distribution.pdf"
+    ],
+    "inputs": [
+      "data/processed/daily.csv",
+      "data/processed/avg_pm_per_smoke_bin.csv"
+    ],
+    "group": "analysis"
+  },
+  {
+    "name": "spending_figure",
+    "script": "2_analysis/appendix/plot_spend_visit_coefficients_by_model.R",
+    "deps": [
+      "spending_models"
+    ],
+    "outputs": [
+      "output/figures/appendix/spend_visit_coefficients_by_model_table_2_fes.pdf"
+    ],
+    "inputs": [
+      "output/models/spend_on_visits_matched_poi_split_sample_monthly_matched_asinh.csv"
+    ],
+    "group": "analysis"
+  },
+  {
+    "name": "county_maps",
+    "script": "2_analysis/appendix/map_heterogeneity_variables.R",
+    "deps": [
+      "county_merge"
+    ],
+    "outputs": [
+      "output/figures/appendix/map_income.pdf",
+      "output/figures/appendix/map_rurality.pdf",
+      "output/figures/appendix/map_background_pm.pdf",
+      "output/figures/appendix/map_nat_amenity.pdf"
+    ],
+    "inputs": [
+      "data/raw/geography/tl_2019_us_county.shp",
+      "data/raw/geography/tl_2020_us_county.shp",
+      "data/raw/geography/tl_2020_us_state.shp",
+      "data/raw/geography/cb_2019_us_county_500k.shp",
+      "data/intermediate/county/county_info_all.csv",
+      "data/raw/geography/tl_2019_us_county.shx",
+      "data/raw/geography/tl_2019_us_county.dbf",
+      "data/raw/geography/tl_2019_us_county.prj",
+      "data/raw/geography/tl_2020_us_county.shx",
+      "data/raw/geography/tl_2020_us_county.dbf",
+      "data/raw/geography/tl_2020_us_county.prj",
+      "data/raw/geography/tl_2020_us_state.shx",
+      "data/raw/geography/tl_2020_us_state.dbf",
+      "data/raw/geography/tl_2020_us_state.prj",
+      "data/raw/geography/cb_2019_us_county_500k.shx",
+      "data/raw/geography/cb_2019_us_county_500k.dbf",
+      "data/raw/geography/cb_2019_us_county_500k.prj"
+    ],
+    "group": "analysis"
+  },
+  {
+    "name": "county_correlation",
+    "script": "2_analysis/appendix/heterogeneity_correlation_matrix.R",
+    "deps": [
+      "daily",
+      "county_merge"
+    ],
+    "outputs": [
+      "output/figures/appendix/heterogeneity_correlation_matrix.pdf"
+    ],
+    "inputs": [
+      "data/processed/daily.csv",
+      "data/processed/avg_pm_per_smoke_bin.csv",
+      "data/intermediate/county/county_info_all.csv"
+    ],
+    "group": "analysis"
+  },
+  {
+    "name": "heterogeneity_figures",
+    "script": "2_analysis/figure_2_day_of_analysis_heterogeneities_plot.R",
+    "deps": [
+      "baseline"
+    ],
+    "outputs": [
+      "output/figures/figure_8_day_of_heterogeneity_daily_effect.pdf",
+      "output/figures/appendix/figure_8_day_of_heterogeneity_daily_effect_quantile_day_interaction_FE.pdf"
+    ],
+    "inputs": [
+      "output/models/binary_base_day_of_dose_response.rds",
+      "output/models/binary_quartile_rurality_interaction.rds",
+      "output/models/binary_quartile_rurality_interaction_quantile_day_interaction_FE.rds",
+      "output/models/binary_weekend_interaction.rds",
+      "output/models/binary_quartile_background_pm_interaction.rds",
+      "output/models/binary_quartile_background_pm_interaction_quantile_day_interaction_FE.rds",
+      "output/models/binary_quartile_income_interaction.rds",
+      "output/models/binary_quartile_income_interaction_quantile_day_interaction_FE.rds",
+      "output/models/binary_quartile_nat_amenity_interaction.rds",
+      "output/models/binary_quartile_nat_amenity_interaction_quantile_day_interaction_FE.rds",
+      "output/models/binary_quartile_gdp_rec_interaction.rds",
+      "output/models/binary_quartile_gdp_rec_interaction_quantile_day_interaction_FE.rds",
+      "output/models/binary_quartile_comp_rec_interaction.rds",
+      "output/models/binary_quartile_comp_rec_interaction_quantile_day_interaction_FE.rds",
+      "output/models/binary_quartile_cbp_outdoor_estab_interaction.rds",
+      "output/models/binary_quartile_cbp_outdoor_estab_interaction_quantile_day_interaction_FE.rds",
+      "output/models/binary_quartile_cbp_outdoor_payroll_interaction.rds",
+      "output/models/binary_quartile_cbp_outdoor_payroll_interaction_quantile_day_interaction_FE.rds",
+      "output/models/binary_quartile_cbp_hhi_estab_interaction.rds",
+      "output/models/binary_quartile_cbp_hhi_estab_interaction_quantile_day_interaction_FE.rds",
+      "output/models/binary_quartile_cbp_hhi_payroll_interaction.rds",
+      "output/models/binary_quartile_cbp_hhi_payroll_interaction_quantile_day_interaction_FE.rds"
+    ],
+    "group": "analysis"
+  },
+  {
+    "name": "spatial_panel",
+    "script": "1_build/reg_data/build_spatial_weight_matrix.R",
+    "deps": [
+      "daily"
+    ],
+    "outputs": [
+      "output/models/sdem_prepared_panel.rds"
+    ],
+    "inputs": [
+      "data/raw/routing/county_neighbors_df_500_km_radius_with_drive_time.csv",
+      "data/raw/geography/tl_2019_us_county.shp",
+      "data/raw/geography/tl_2020_us_county.shp",
+      "data/raw/geography/tl_2020_us_state.shp",
+      "data/raw/geography/cb_2019_us_county_500k.shp",
+      "data/processed/daily.csv",
+      "data/processed/avg_pm_per_smoke_bin.csv",
+      "data/raw/geography/tl_2019_us_county.shx",
+      "data/raw/geography/tl_2019_us_county.dbf",
+      "data/raw/geography/tl_2019_us_county.prj",
+      "data/raw/geography/tl_2020_us_county.shx",
+      "data/raw/geography/tl_2020_us_county.dbf",
+      "data/raw/geography/tl_2020_us_county.prj",
+      "data/raw/geography/tl_2020_us_state.shx",
+      "data/raw/geography/tl_2020_us_state.dbf",
+      "data/raw/geography/tl_2020_us_state.prj",
+      "data/raw/geography/cb_2019_us_county_500k.shx",
+      "data/raw/geography/cb_2019_us_county_500k.dbf",
+      "data/raw/geography/cb_2019_us_county_500k.prj"
+    ],
+    "group": "analysis"
+  },
+  {
+    "name": "spatial_models",
+    "script": "2_analysis/spatial_substitution_estimate_run.R",
+    "deps": [
+      "spatial_panel"
+    ],
+    "outputs": [
+      "output/models/spatial_sdem_v4_dcs_units_results.rds"
+    ],
+    "inputs": [
+      "output/models/sdem_prepared_panel.rds"
+    ],
+    "group": "analysis"
+  },
+  {
+    "name": "spatial_figure",
+    "script": "2_analysis/spatial_substitution_estimate_plot.R",
+    "deps": [
+      "spatial_models"
+    ],
+    "outputs": [
+      "output/figures/spatial_sdem_direct_indirect_typical_episode_v4_dcs_units.pdf"
+    ],
+    "inputs": [
+      "output/models/spatial_sdem_v4_dcs_units_results.rds"
+    ],
+    "group": "analysis"
+  },
+  {
+    "name": "spatial_neighbors",
+    "script": "2_analysis/appendix/sdem_neighbor_profile_table.R",
+    "deps": [
+      "spatial_models"
+    ],
+    "outputs": [
+      "output/tables/appendix/appendix_table_sdem_neighbor_profile.tex"
+    ],
+    "inputs": [
+      "output/models/spatial_sdem_v4_dcs_units_results.rds"
+    ],
+    "group": "analysis"
+  },
+  {
+    "name": "lpdid_thresholds",
+    "script": "2_analysis/appendix/lpdid_threshold_robustness.R",
+    "deps": [
+      "daily"
+    ],
+    "outputs": [
+      "output/models/lpdid_threshold_robustness/estimates_and_used_samples.csv",
+      "output/models/lpdid_threshold_robustness/sample_reductions_and_estimation_attrition.csv",
+      "data/intermediate/reg_data/lpdid_prepped_panel.rds",
+      "output/figures/appendix/lpdid_threshold_robustness_over_60.pdf",
+      "output/figures/appendix/lpdid_threshold_robustness_smoke_as_dv.pdf"
+    ],
+    "inputs": [
+      "data/processed/daily.csv",
+      "data/processed/avg_pm_per_smoke_bin.csv"
+    ],
+    "group": "analysis"
+  },
+  {
+    "name": "lpdid_main",
+    "script": "2_analysis/lpdid_daily_visits_analysis.R",
+    "deps": [
+      "lpdid_thresholds"
+    ],
+    "outputs": [
+      "output/figures/lpdid_cc_over_60.pdf",
+      "output/figures/lpdid_cc_smoke_as_dv.pdf",
+      "output/figures/lpdid_cc_spell_progressive_3.pdf"
+    ],
+    "inputs": [
+      "output/models/lpdid_threshold_robustness/estimates_and_used_samples.csv",
+      "output/models/lpdid_threshold_robustness/sample_reductions_and_estimation_attrition.csv",
+      "data/processed/daily.csv",
+      "data/intermediate/reg_data/lpdid_prepped_panel.rds"
+    ],
+    "group": "analysis"
+  },
+  {
+    "name": "lpdid_legacy",
+    "script": "2_analysis/appendix/lpdid_prior_smoke_filter_run_and_plot.R",
+    "deps": [
+      "lpdid_main"
+    ],
+    "outputs": [
+      "output/figures/appendix/lpdid_prior_smoke_treated_cap_smoke.pdf",
+      "output/figures/appendix/lpdid_prior_smoke_treated_cap_visits.pdf"
+    ],
+    "inputs": [
+      "output/figures/lpdid_cc_over_60.pdf",
+      "output/figures/lpdid_cc_smoke_as_dv.pdf",
+      "output/figures/lpdid_cc_spell_progressive_3.pdf",
+      "data/processed/daily.csv",
+      "data/intermediate/reg_data/lpdid_prepped_panel.rds"
+    ],
+    "group": "analysis"
+  },
+  {
+    "name": "baseline_table",
+    "script": "2_analysis/table_1_comparing_fixed_effects_run_and_output.R",
+    "deps": [
+      "daily"
+    ],
+    "outputs": [
+      "output/tables/table_1_fixed_effect_comp_weather_bins.tex"
+    ],
+    "inputs": [
+      "data/processed/daily.csv",
+      "data/processed/avg_pm_per_smoke_bin.csv"
+    ],
+    "group": "analysis"
+  },
+  {
+    "name": "aqi_diagnostic",
+    "script": "2_analysis/appendix/reconstruct_smoke_aqi_diagnostic.R",
+    "deps": [
+      "daily"
+    ],
+    "outputs": [
+      "output/figures/appendix/smoke_non_smoke_AQI.png"
+    ],
+    "inputs": [
+      "data/processed/daily.csv",
+      "data/processed/avg_pm_per_smoke_bin.csv",
+      "data/intermediate/smoke/smoke_pm_with_aqi_filters.csv"
+    ],
+    "group": "analysis"
+  },
+  {
+    "name": "schematic",
+    "script": "scripts/copy_schematic.R",
+    "deps": [],
+    "outputs": [
+      "output/figures/spatial_sub_for_paper.png"
+    ],
+    "inputs": [
+      "assets/spatial_sub_for_paper.png"
+    ],
+    "group": "analysis"
+  }
+]

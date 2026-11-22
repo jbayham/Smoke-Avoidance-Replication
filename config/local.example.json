@@ -1,0 +1,6 @@
+{
+  "data_dir": "data",
+  "output_dir": "output",
+  "rscript": "Rscript",
+  "threads": 4
+}

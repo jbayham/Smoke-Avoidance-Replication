@@ -1,0 +1,377 @@
+[
+  {
+    "exhibit": "Figure 1",
+    "caption": "Days of smoke \\PM exposure in sample",
+    "assets": [
+      {
+        "path": "output/figures/appendix/smoke_days_by_bin_yearly_average.pdf",
+        "stage": "smoke_by_year",
+        "kind": "generated"
+      },
+      {
+        "path": "output/figures/appendix/smoke_days_by_bin_pct_change_from_2020.pdf",
+        "stage": "smoke_by_year",
+        "kind": "generated"
+      }
+    ]
+  },
+  {
+    "exhibit": "Figure 2",
+    "caption": "Spatial spillover example",
+    "assets": [
+      {
+        "path": "output/figures/spatial_sub_for_paper.png",
+        "stage": "schematic",
+        "kind": "static_illustration"
+      }
+    ]
+  },
+  {
+    "exhibit": "Figure 3",
+    "caption": "Day-of smoke exposure effect on foot traffic",
+    "assets": [
+      {
+        "path": "output/figures/figure_1a_dose_response_daily_effect.pdf",
+        "stage": "baseline_figure",
+        "kind": "generated"
+      }
+    ]
+  },
+  {
+    "exhibit": "Figure 4",
+    "caption": "Day of Smoke Exposure with Heterogeneities (All Bins)",
+    "assets": [
+      {
+        "path": "output/figures/figure_8_day_of_heterogeneity_daily_effect.pdf",
+        "stage": "heterogeneity_figures",
+        "kind": "generated"
+      }
+    ]
+  },
+  {
+    "exhibit": "Figure 5",
+    "caption": "Indoor/Outdoor Results",
+    "assets": [
+      {
+        "path": "output/figures/figure_3a_day_of_analysis_naics_by_setting_60_100.pdf",
+        "stage": "sectors",
+        "kind": "generated"
+      }
+    ]
+  },
+  {
+    "exhibit": "Figure 6",
+    "caption": "Intertemporal Substitution",
+    "assets": [
+      {
+        "path": "output/figures/lpdid_cc_smoke_as_dv.pdf",
+        "stage": "lpdid_main",
+        "kind": "generated"
+      },
+      {
+        "path": "output/figures/lpdid_cc_over_60.pdf",
+        "stage": "lpdid_main",
+        "kind": "generated"
+      },
+      {
+        "path": "output/figures/lpdid_cc_spell_progressive_3.pdf",
+        "stage": "lpdid_main",
+        "kind": "generated"
+      }
+    ]
+  },
+  {
+    "exhibit": "Figure 7",
+    "caption": "Spatial Substitution",
+    "assets": [
+      {
+        "path": "output/figures/spatial_sdem_direct_indirect_typical_episode_v4_dcs_units.pdf",
+        "stage": "spatial_figure",
+        "kind": "generated"
+      }
+    ]
+  },
+  {
+    "exhibit": "Figure 8",
+    "caption": "Comparing health costs and spending costs",
+    "assets": [
+      {
+        "path": "output/figures/figure_10b_welfare_comparison_ma_2024_per_day_three_panel_updated.pdf",
+        "stage": "welfare_figures",
+        "kind": "generated"
+      }
+    ]
+  },
+  {
+    "exhibit": "Figure A.1",
+    "caption": "Additional smoke filter effect on main results",
+    "assets": [
+      {
+        "path": "output/figures/appendix/aqi_filter_grid_dose_response_median_only.pdf",
+        "stage": "aqi_filters",
+        "kind": "generated"
+      }
+    ]
+  },
+  {
+    "exhibit": "Figure A.2",
+    "caption": "Some large decreases in the overall air quality in a county are unduly associated with smoke \\PM",
+    "assets": [
+      {
+        "path": "output/figures/appendix/smoke_non_smoke_AQI.png",
+        "stage": "aqi_diagnostic",
+        "kind": "generated"
+      }
+    ]
+  },
+  {
+    "exhibit": "Table B.1",
+    "caption": "Functional Form Analysis",
+    "assets": [
+      {
+        "path": "output/tables/appendix/appendix_table_count_models.tex",
+        "stage": "count_models",
+        "kind": "generated"
+      }
+    ]
+  },
+  {
+    "exhibit": "Table B.2",
+    "caption": "Fixed effects comparison",
+    "assets": [
+      {
+        "path": "output/tables/table_1_fixed_effect_comp_weather_bins.tex",
+        "stage": "baseline_table",
+        "kind": "generated"
+      }
+    ]
+  },
+  {
+    "exhibit": "Figure B.1",
+    "caption": "Distribution of Deferrable Visits",
+    "assets": [
+      {
+        "path": "output/figures/appendix/daily_deferrable_visits_distribution.pdf",
+        "stage": "visit_distribution",
+        "kind": "generated"
+      },
+      {
+        "path": "output/figures/appendix/daily_deferrable_visits_distribution_filter_out_zero_visit_counties.pdf",
+        "stage": "visit_distribution",
+        "kind": "generated"
+      }
+    ]
+  },
+  {
+    "exhibit": "Table C.1",
+    "caption": "Monthly Panel Composition and Smoke",
+    "assets": [
+      {
+        "path": "output/tables/appendix/appendix_table_panel_composition_smoke.tex",
+        "stage": "panel_composition",
+        "kind": "generated"
+      }
+    ]
+  },
+  {
+    "exhibit": "Figure C.1",
+    "caption": "Monthly residents per sampled device",
+    "assets": [
+      {
+        "path": "output/figures/appendix/panel_scaling_multiple_distribution.pdf",
+        "stage": "panel_composition",
+        "kind": "generated"
+      }
+    ]
+  },
+  {
+    "exhibit": "Figure D.1",
+    "caption": "Event Studies with Clean Controls",
+    "assets": [
+      {
+        "path": "output/figures/appendix/lpdid_prior_smoke_treated_cap_smoke.pdf",
+        "stage": "lpdid_legacy",
+        "kind": "generated"
+      },
+      {
+        "path": "output/figures/appendix/lpdid_prior_smoke_treated_cap_visits.pdf",
+        "stage": "lpdid_legacy",
+        "kind": "generated"
+      }
+    ]
+  },
+  {
+    "exhibit": "Figure E.1",
+    "caption": "Likely Indoor/Outdoor Visits Analysis for all Smoke Types",
+    "assets": [
+      {
+        "path": "output/figures/figure_3b_day_of_analysis_naics_by_setting_and_bin.pdf",
+        "stage": "sectors",
+        "kind": "generated"
+      }
+    ]
+  },
+  {
+    "exhibit": "Table E.1",
+    "caption": "Classifications of likely indoor/outdoor NAICS codes.",
+    "assets": [
+      {
+        "path": "output/tables/appendix/appendix_table_indoor_outdoor_classifications.tex",
+        "stage": "classification",
+        "kind": "generated"
+      }
+    ]
+  },
+  {
+    "exhibit": "Figure F.1",
+    "caption": "Alternative health cost estimates",
+    "assets": [
+      {
+        "path": "output/figures/appendix/figure_10a_welfare_comparison_gould_2024.pdf",
+        "stage": "welfare_figures",
+        "kind": "generated"
+      },
+      {
+        "path": "output/figures/appendix/figure_10c_welfare_comparison_qiu_2025.pdf",
+        "stage": "welfare_figures",
+        "kind": "generated"
+      }
+    ]
+  },
+  {
+    "exhibit": "Table G.1",
+    "caption": "Smoke co-occurance across neighboring counties",
+    "assets": [
+      {
+        "path": "output/tables/appendix/appendix_table_sdem_neighbor_profile.tex",
+        "stage": "spatial_neighbors",
+        "kind": "generated"
+      }
+    ]
+  },
+  {
+    "exhibit": "Figure H.1",
+    "caption": "Fire Prevalence",
+    "assets": [
+      {
+        "path": "output/figures/appendix/viirs_fire_point_distribution.pdf",
+        "stage": "fire_distribution",
+        "kind": "generated"
+      }
+    ]
+  },
+  {
+    "exhibit": "Table H.1",
+    "caption": "Controlling for Fire Co-occurrence with Smoke",
+    "assets": [
+      {
+        "path": "output/tables/appendix/appendix_table_fire_robustness_log.tex",
+        "stage": "fire_robustness",
+        "kind": "generated"
+      }
+    ]
+  },
+  {
+    "exhibit": "Figure I.1",
+    "caption": "Maps of Heterogeneity Variables",
+    "assets": [
+      {
+        "path": "output/figures/appendix/map_rurality.pdf",
+        "stage": "county_maps",
+        "kind": "generated"
+      },
+      {
+        "path": "output/figures/appendix/map_income.pdf",
+        "stage": "county_maps",
+        "kind": "generated"
+      },
+      {
+        "path": "output/figures/appendix/map_background_pm.pdf",
+        "stage": "county_maps",
+        "kind": "generated"
+      },
+      {
+        "path": "output/figures/appendix/map_nat_amenity.pdf",
+        "stage": "county_maps",
+        "kind": "generated"
+      }
+    ]
+  },
+  {
+    "exhibit": "Figure I.2",
+    "caption": "Weekday/Weekend Smoke Day Counts",
+    "assets": [
+      {
+        "path": "output/figures/appendix/smoke_days_by_weekend_weekday_counts.pdf",
+        "stage": "smoke_by_weekday",
+        "kind": "generated"
+      }
+    ]
+  },
+  {
+    "exhibit": "Figure I.3",
+    "caption": "Correlation matrix of continuous heterogeneity variables",
+    "assets": [
+      {
+        "path": "output/figures/appendix/heterogeneity_correlation_matrix.pdf",
+        "stage": "county_correlation",
+        "kind": "generated"
+      }
+    ]
+  },
+  {
+    "exhibit": "Figure I.4",
+    "caption": "Heterogeneity in Smoke Responses with Date-by-Quartile Fixed Effects",
+    "assets": [
+      {
+        "path": "output/figures/appendix/figure_8_day_of_heterogeneity_daily_effect_quantile_day_interaction_FE.pdf",
+        "stage": "heterogeneity_figures",
+        "kind": "generated"
+      }
+    ]
+  },
+  {
+    "exhibit": "Figure J.1",
+    "caption": "Comparison between relationship of visits and spend with different models",
+    "assets": [
+      {
+        "path": "output/figures/appendix/spend_visit_coefficients_by_model_table_2_fes.pdf",
+        "stage": "spending_figure",
+        "kind": "generated"
+      }
+    ]
+  },
+  {
+    "exhibit": "Figure J.2",
+    "caption": "Distributions of within and between county variance",
+    "assets": [
+      {
+        "path": "output/figures/appendix/figure_A3_within_and_between_variance.png",
+        "stage": "smoke_variance_plot",
+        "kind": "generated"
+      }
+    ]
+  },
+  {
+    "exhibit": "Table J.1",
+    "caption": "County Smoke Variance",
+    "assets": [
+      {
+        "path": "output/tables/appendix/appendix_table_within_county_smoke_variance.tex",
+        "stage": "within_county_variance",
+        "kind": "generated"
+      }
+    ]
+  },
+  {
+    "exhibit": "Table K.1",
+    "caption": "Additional Fixed Effects",
+    "assets": [
+      {
+        "path": "output/tables/appendix/appendix_table_additional_fixed_effects.tex",
+        "stage": "additional_fixed_effects",
+        "kind": "generated"
+      }
+    ]
+  }
+]

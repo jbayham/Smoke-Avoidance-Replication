@@ -1,0 +1,14 @@
+{
+  "regression_values": 260,
+  "match_3dp": 243,
+  "within_0_001": 260,
+  "outside_tolerance": [],
+  "max_absolute_regression_difference": 0.000671261151754528,
+  "sample_size_checks": 21,
+  "sample_sizes_exact": 21,
+  "neighbor_shares_match": 42,
+  "classifications_match": 42,
+  "spending_total": 85392835.04397771,
+  "welfare_total": 1369369.0531479837,
+  "rounded_paper_spending_total": 85356015
+}
