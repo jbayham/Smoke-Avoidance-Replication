@@ -34,3 +34,20 @@ welfare_per_bin <- add_new_sample_and_sector(
 
 
 saveRDS(welfare_per_bin, ESTIMATED_WELFARE_PER_BIN_PATH)
+
+
+canada_estimate <- tibble(days_060_100=1218,
+                          days_100_200=645,
+                          days_200_500=6) %>% 
+  mutate(
+    spend_060_100=days_060_100*welfare_per_bin$change_in_spend_from_smoke[welfare_per_bin$bin=='060_100'],
+    spend_100_200=days_100_200*welfare_per_bin$change_in_spend_from_smoke[welfare_per_bin$bin=='100_200'],
+    spend_200_500=days_200_500*welfare_per_bin$change_in_spend_from_smoke[welfare_per_bin$bin=='200_500'],
+    welfare_060_100=-1*days_060_100*welfare_per_bin$welfare[welfare_per_bin$bin=='060_100'],
+    welfare_100_200=-1*days_100_200*welfare_per_bin$welfare[welfare_per_bin$bin=='100_200'],
+    welfare_200_500=-1*days_200_500*welfare_per_bin$welfare[welfare_per_bin$bin=='200_500']
+  )
+
+print(paste0('Canada Smoke Spend: ', sum(canada_estimate %>% select(starts_with('spend')) %>% t())))
+print(paste0('Canada Smoke Welfare: ', sum(canada_estimate %>% select(starts_with('welfare')) %>% t())))
+
