@@ -1,8 +1,13 @@
-# Platform setup
+# Software environment and installation notes
+
+The manuscript verification target is the documented Linux environment below.
+Cross-platform testing and clean installation on every operating system are not
+release requirements. The macOS/Windows notes are optional installation guidance,
+not claims of verified execution.
 
 The entry point uses Python's standard library and subprocess argument arrays, not Bash, `fcntl`, Unix `flock`, symlinks or a server mount. Use native Python and R on Linux, macOS or Windows. Restore the project separately on each operating system; never copy compiled R libraries between platforms.
 
-The reference environment is Ubuntu 22.04, R 4.5.0 and Python 3.10.12. Exact package versions are in `renv.lock` and `package_versions.csv`. Notable pins are `fixest` 0.11.2, `arrow` 14.0.0.2, `sf` 1.0-15 and `ggplot2` 4.0.3. The setup script installs renv 1.3.1 into the package's own bootstrap library and restores into `renv/library/`; global R libraries are not modified. `doctor` refuses mismatched versions.
+The reference environment is Ubuntu 22.04.5 LTS (x86_64), R 4.5.0 and Python 3.10.12. All 145 R package versions are in [renv.lock](../renv.lock) and [package_versions.csv](package_versions.csv). [Reference session information](reference_sessionInfo.txt) records the R platform, locale and BLAS/LAPACK; each analysis stage writes its own session information under `output/checks/`. Python requires no third-party packages. Notable R pins are `fixest` 0.11.2, `arrow` 14.0.0.2, `sf` 1.0-15 and `ggplot2` 4.0.3. The setup script installs renv 1.3.1 into the package's own bootstrap library and restores into `renv/library/`; global R libraries are not modified. `doctor` refuses mismatched versions.
 
 ## Linux
 
@@ -18,8 +23,8 @@ Install R 4.5.0 for your architecture, Python, and Apple's command-line developm
 
 Use R 4.5.0 and Python 3.10+, with Rscript on PATH or specified in `config/local.json`. Use the matching Rtools45 toolchain if restoring archived packages from source. Prefer compatible historical binaries when available; otherwise `sf`, `units`, `ncdf4` and Arrow may require their documented source-build dependencies. Paths containing spaces are supported. In JSON, use forward slashes or escape backslashes. Long source/dataset paths may require Windows long-path support.
 
-## What portability testing means
+## Verification scope
 
-The GitHub Actions workflow restores the lockfile and runs synthetic checks on all three operating systems, without datasets. A three-platform pass requires successful workflow runs on all three operating systems. A synthetic CI pass does not substitute for the full numerical replication. See `validation.md` for the current evidence and pending work.
+The GitHub Actions workflow checks source hashes, Python runner tests and the pipeline graph on Linux, without installing R or loading datasets. Full R execution and numerical replication are verified on the documented server environment. Passing lightweight CI does not certify the full rebuild. Historical fresh-install failures remain documented in [validation status](validation.md), but cross-platform installation is outside the manuscript release criteria.
 
 Primary installation references: [renv](https://rstudio.github.io/renv/articles/renv.html), [sf](https://r-spatial.github.io/sf/), [Arrow R installation](https://arrow.apache.org/docs/r/articles/install.html). Current documentation may describe newer versions; apply it to the pinned releases rather than upgrading the analysis implicitly.

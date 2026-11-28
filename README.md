@@ -26,6 +26,8 @@ For example, an extracted AQI file must be at `data/raw/aqi/daily_aqi_by_county_
 
 ## Reproduce the results
 
+The reference environment is **Ubuntu 22.04.5 LTS (x86_64), R 4.5.0, and Python 3.10.12**. All **145 R package versions** are listed in [package_versions.csv](docs/package_versions.csv) and pinned in [renv.lock](renv.lock); [session information](docs/reference_sessionInfo.txt) records the R platform and BLAS/LAPACK. Python uses only its standard library. The manuscript verification target is this documented Linux environment; testing on every operating system is not a release requirement.
+
 1. Install **R 4.5.0** and **Python 3.10 or later**. Add `Rscript` and Python to PATH. See [platform setup](docs/platforms.md) before installing compiled R dependencies.
 2. Extract this entire folder to a writable local directory. Run commands from that directory. On Linux/macOS use `python3` if `python` is unavailable; on Windows use `py -3` if needed.
 3. Restore the pinned R environment (internet access is needed for installation):
@@ -93,7 +95,7 @@ To reduce temporary memory during commercial daily-array expansion, set the envi
 | `scripts/` | Environment setup, preflight, stage launch and verification helpers |
 | `tests/` | Synthetic fixtures for joins, dates, monthly arrays, threshold boundaries, plotting transformations and runner behavior |
 | `renv.lock`, `docs/package_versions.csv` | Exact R/package versions |
-| `.github/workflows/checks.yml` | Linux/macOS/Windows synthetic checks; no licensed data |
+| `.github/workflows/checks.yml` | Lightweight Linux source-integrity and Python checks; full R/data verification runs in the documented server environment |
 | `docs/` | Input inventory, pipeline and exhibit maps, provenance and validation record |
 
 LaTeX table fragments can be included in a manuscript with `\input{...}`. Figures are saved as PDF/PNG; a TeX installation is not required to estimate models or produce them. Some main multi-panel exhibits are separate component files, listed together in the exhibit map.
